@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import { testTagGenerate } from "./services/tagService.js";
 import { OpenAI } from 'openai';
-import postRouter from "./routes/posts.js";
+import postRouter, { init } from "./routes/posts.js";
+import { connectDB } from "./database/db.js";
 
 // 환경변수
 dotenv.config();
@@ -18,8 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 // /posts/ 등 라우터 사용
 app.use("/posts", postRouter);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log("server running at", PORT);
+    const db = await connectDB();
+    init(db);
     //console.log("OPENAI_API_KEY", OPENAI_API_KEY);
     //testTagGenerate(OPENAI_API_KEY);
     //console.log(MONGODB_URI);
